@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chameleon - Internal Lead Generation Platform</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #4cc9f0;
+            --success: #2ec4b6;
+            --danger: #e63946;
+            --warning: #ff9f1c;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --gray-dark: #343a40;
+            --sidebar-width: 250px;
+            --header-height: 60px;
+            --animation-duration: 0.3s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+        }
+        
+        /* Layout */
+        .app-container {
+            display: grid;
+            grid-template-areas:
+                "sidebar header"
+                "sidebar main";
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: var(--header-height) 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            grid-area: header;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--gray-light);
+            border-radius: 50px;
+            padding: 8px 15px;
+            width: 300px;
+        }
+        
+        .search-bar input {
+            background: transparent;
+            border: none;
+            outline: none;
+            margin-left: 10px;
+            width: 100%;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background-color: var(--dark);
+            color: white;
+            padding: 20px 0;
+            position: relative;
+            z-index: 20;
+        }
+        
+        .logo {
+            padding: 0 20px;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item.active {
+            background-color: var(--primary);
+        }
+        
+        .nav-icon {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .create-btn {
+            margin: 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .create-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .create-btn svg {
+            margin-right: 8px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            grid-area: main;
+            padding: 30px;
+            overflow-y: auto;
+            max-height: calc(100vh - var(--header-height));
+        }
+        
+        .page-title {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-title {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .trend-up {
+            color: var(--success);
+        }
+        
+        .trend-down {
+            color: var(--danger);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Forms Table */
+        .forms-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .forms-table th, .forms-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .forms-table th {
+            color: var(--gray);
+            font-weight: normal;
+            font-size: 14px;
+        }
+        
+        .forms-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 12px;
+        }
+        
+        .status-published {
+            background-color: rgba(46, 196, 182, 0.1);
+            color: var(--success);
+        }
+        
+        .status-draft {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: var(--gray);
+        }
+        
+        .actions-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.2s;
+        }
+        
+        .action-btn:hover {
+            color: var(--primary);
+        }
+        
+        /* Form Builder */
+        .builder-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .components-panel {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            height: fit-content;
+        }
+        
+        .components-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .component-item {
+            padding: 10px;
+            border: 1px dashed var(--gray-light);
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .component-item:hover {
+            background-color: var(--gray-light);
+        }
+        
+        .component-icon {
+            margin-right: 10px;
+            color: var(--gray);
+        }
+        
+        .form-canvas {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            min-height: 600px;
+        }
+        
+        .canvas-header {
+            margin-bottom: 30px;
+        }
+        
+        .form-name-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .form-name-input:focus {
+            border-color: var(--primary);
+        }
+        
+        .form-description-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            color: var(--gray);
+            font-size: 16px;
+            padding: 5px 0;
+        }
+        
+        .drop-area {
+            min-height: 100px;
+            border: 2px dashed var(--gray-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            transition: background-color 0.2s;
+            margin-top: 20px;
+        }
+        
+        .drop-area.active {
+            background-color: rgba(67, 97, 238, 0.05);
+            border-color: var(--primary);
+        }
+        
+        .form-field {
+            background-color: white;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .form-field.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+        
+        .field-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .field-label {
+            font-weight: bold;
+        }
+        
+        .field-required {
+            color: var(--danger);
+            margin-left: 5px;
+        }
+        
+        .field-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .field-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.2s;
+        }
+        
+        .field-action-btn:hover {
+            color: var(--primary);
+        }
+        
+        .field-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .field-input:focus {
+            border-color: var(--primary);
+        }
+        
+        .field-help {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .properties-panel {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            height: fit-content;
+        }
+        
+        .properties-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .property-group {
+            margin-bottom: 15px;
+        }
+        
+        .property-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .property-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .property-input:focus {
+            border-color: var(--primary);
+        }
+        
+        .property-checkbox {
+            margin-right: 8px;
+        }
+        
+        .builder-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray);
+            color: var(--gray);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Analytics Page */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .filter-select:focus {
+            border-color: var(--primary);
+        }
+        
+        .leads-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .leads-table th, .leads-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .leads-table th {
+            color: var(--gray);
+            font-weight: normal;
+            font-size: 14px;
+        }
+        
+        /* Settings Page */
+        .settings-container {
+            max-width: 800px;
+        }
+        
+        .settings-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .settings-heading {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .settings-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .form-select:focus {
+            border-color: var(--primary);
+        }
+        
+        .settings-btns {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* Preview & Publish Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--gray);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .form-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: 20px;
+        }
+        
+        .form-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--gray);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .form-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .preview-container {
+            padding: 20px;
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .publish-options {
+            background-color: var(--gray-light);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .option-heading {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .embed-code {
+            padding: 15px;
+            background-color: var(--dark);
+            color: white;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+        
+        .custom-url {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .url-prefix {
+            padding: 10px;
+            background-color: var(--gray-light);
+            border: 1px solid var(--gray);
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            color: var(--gray);
+        }
+        
+        .url-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--gray);
+            border-radius: 0 4px 4px 0;
+            outline: none;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn var(--animation-duration) ease-in-out;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .builder-container {
+                grid-template-columns: 250px 1fr 250px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .builder-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-areas:
+                    "header header"
+                    "main main";
+                grid-template-columns: 1fr;
+                grid-template-rows: var(--header-height) 1fr;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                top: 0;
+                bottom: 0;
+                transition: left var(--animation-duration);
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .forms-table {
+                font-size: 14px;
+            }
+            
+            .forms-table th:nth-child(3),
+            .forms-table td:nth-child(3) {
+                display: none;
+            }
+        }
+
+        /* Custom Styles for Form Preview */
+        .preview-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .preview-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .preview-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .preview-form input,
+        .preview-form select,
+        .preview-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray-light);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .preview-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .preview-form .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .preview-form .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"></path>
+                        <path d="M12 12v5"></path>
+                        <path d="M9 9h10"></path>
+                        <path d="M16 9v10"></path>
+                        <path d="M19 16H9"></path>
+                    </svg>
+                </span>
+                Chameleon
+            </div>
+            
+            <button class="create-btn" id="newFormBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Create New Form
+            </button>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </span>
+                    Dashboard
+                </li>
+                <li class="nav-item" data-page="forms">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </span>
+                    Forms
+                </li>
+                <li class="nav-item" data-page="analytics">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                            <line x1="2" y1="20" x2="22" y2="20"></line>
+                        </svg>
+                    </span>
+                    Analytics
+                </li>
+                <li class="nav-item" data-page="integrations">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </span>
+                    Integrations
+                </li>
+                <li class="nav-item" data-page="leads">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    Leads
+                </li>
+                <li class="nav-item" data-page="settings">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </span>
+                    Settings
+                </li>
+            </ul>
+        </aside>
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="search-bar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" placeholder="Search forms..." id="searchInput">
+            </div>
+            
+            <div class="user-menu">
+                <div class="notification-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-avatar">JS</div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div class="page active" id="dashboard-page">
+                <h1 class="page-title">Dashboard</h1>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Forms</div>
+                        <div class="stat-value">24</div>
+                        <div class="stat-trend trend-up">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                <polyline points="16 7 22 7 22 13"></polyline>
+                            </svg>
+                            15% from last month
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Total Leads</div>
+                        <div class="stat-value">2,154</div>
+                        <div class="stat-trend trend-up">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                <polyline points="16 7 22 7 22 13"></polyline>
+                            </svg>
+                            23% from last month
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Conversion Rate</div>
+                        <div class="stat-value">32.8%</div>
+                        <div class="stat-trend trend-up">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                <polyline points="16 7 22 7 22 13"></polyline>
+                            </svg>
+                            5.2% from last month
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Average Form Completion Time</div>
+                        <div class="stat-value">1:24</div>
+                        <div class="stat-trend trend-down">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
+                                <polyline points="16 17 22 17 22 11"></polyline>
+                            </svg>
+                            12s from last month
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Recent Forms</div>
+                        <button class="btn btn-outline" id="viewAllFormsBtn">View All</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="forms-table">
+                            <thead>
+                                <tr>
+                                    <th>Form Name</th>
+                                    <th>Status</th>
+                                    <th>Leads</th>
+                                    <th>Last Updated</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Customer Information Form</td>
+                                    <td><span class="status-badge status-published">Published</span></td>
+                                    <td>145</td>
+                                    <td>April 1, 2025</td>
+                                    <td class="actions-cell">
+                                        <button class="action-btn edit-form-btn" data-id="1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Product Interest Survey</td>
+                                    <td><span class="status-badge status-draft">Draft</span></td>
+                                    <td>0</td>
+                                    <td>April 10, 2025</td>
+                                    <td class="actions-cell">
+                                        <button class="action-btn edit-form-btn" data-id="2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Website Feedback Form</td>
+                                    <td><span class="status-badge status-published">Published</span></td>
+                                    <td>78</td>
+                                    <td>March 20, 2025</td>
+                                    <td class="actions-cell">
+                                        <button class="action-btn edit-form-btn" data-id="3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Lead Generation Overview</div>
+                        <div class="filter-bar">
+                            <select class="filter-select">
+                                <option>Last 7 Days</option>
+                                <option>Last 30 Days</option>
+                                <option>Last 90 Days</option>
+                                <option>This Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <!-- Chart placeholder with SVG -->
+                            <svg width="100%" height="300">
+                                <rect x="0" y="250" width="100%" height="1" fill="#e9ecef" />
+                                <rect x="0" y="200" width="100%" height="1" fill="#e9ecef" />
+                                <rect x="0" y="150" width="100%" height="1" fill="#e9ecef" />
+                                <rect x="0" y="100" width="100%" height="1" fill="#e9ecef" />
+                                <rect x="0" y="50" width="100%" height="1" fill="#e9ecef" />
+                                
+                                <!-- Bar chart -->
+                                <rect x="40" y="180" width="40" height="70" fill="#4361ee" rx="4" />
+                                <rect x="100" y="150" width="40" height="100" fill="#4361ee" rx="4" />
+                                <rect x="160" y="120" width="40" height="130" fill="#4361ee" rx="4" />
+                                <rect x="220" y="100" width="40" height="150" fill="#4361ee" rx="4" />
+                                <rect x="280" y="70" width="40" height="180" fill="#4361ee" rx="4" />
+                                <rect x="340" y="90" width="40" height="160" fill="#4361ee" rx="4" />
+                                <rect x="400" y="130" width="40" height="120" fill="#4361ee" rx="4" />
+                                
+                                <!-- Line chart -->
+                                <path d="M60 200 L120 180 L180 160 L240 140 L300 120 L360 130 L420 150" 
+                                      stroke="#2ec4b6" 
+                                      stroke-width="3" 
+                                      fill="none" />
+                                
+                                <!-- Labels -->
+                                <text x="60" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 9</text>
+                                <text x="120" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 10</text>
+                                <text x="180" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 11</text>
+                                <text x="240" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 12</text>
+                                <text x="300" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 13</text>
+                                <text x="360" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 14</text>
+                                <text x="420" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 15</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Builder Page -->
+            <div class="page" id="form-builder-page">
+                <h1 class="page-title">Form Builder</h1>
+                
+                <div class="builder-container">
+                    <!-- Components Panel -->
+                    <div class="components-panel">
+                        <h3 class="components-title">Form Components</h3>
+                        
+                        <div class="component-item" draggable="true" data-type="text">
+                            <span class="component-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="17" y1="10" x2="3" y2="10"></line>
+                                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                                    <line x1="17" y1="18" x2="3" y2="18"></line>
+                                </svg>
+                            </span>
+                            Text Field
+                        </div>
+                        
+                        <div class="component-item" draggable="true" data-type="email">
+                            <span class="component-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </span>
+                            Email Field
+                        </div>
+                        
+                        <div class="component-item" draggable="true" data-type="phone">
+                            <span class="component-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                            </span>
+                            Phone Number
+                        </div>
+                        
+                        <div class="component-item" draggable="true" data-type="select">
+                            <span class="component-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+                            Dropdown Menu
+                        </div>
+                        
+                        <div class="component-item" draggable="true" data-type="radio">
+                            <span class="component-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </span>
+                            Radio Buttons
+                        </div>
+                        
+                        <div class="component-item" draggable="true" data-type="checkbox">
+                            <span class="component-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="9 11 12 14 22 4"></polyline>
+                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                </svg>
+                            </span>
+                            Checkboxes
+                        </div>
+                        
+                        <div class="component-item" draggable="true" data-type="textarea">
+                            <span class="component-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                                    <line x1="9" y1="20" x2="15" y2="20"></line>
+                                    <line x1="12" y1="4" x2="12" y2="20"></line>
+                                </svg>
+                            </span>
+                            Text Area
+                        </div>
+                        
+                        <div class="component-item" draggable="true" data-type="date">
+                            <span class="component-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </span>
+                            Date Picker
+                        </div>
+                    </div>
+                    
+                    <!-- Form Canvas -->
+                    <div class="form-canvas">
+                        <div class="canvas-header">
+                            <input type="text" class="form-name-input" placeholder="Enter form name..." value="Customer Information Form">
+                            <input type="text" class="form-description-input" placeholder="Enter form description..." value="Collects basic customer information and preferences">
+                        </div>
+                        
+                        <div class="form-fields">
+                            <!-- Example Fields -->
+                            <div class="form-field" data-field-id="field1">
+                                <div class="field-header">
+                                    <span class="field-label">Full Name <span class="field-required">*</span></span>
+                                    <div class="field-actions">
+                                        <button class="field-action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 5v14M5 12h14" />
+                                            </svg>
+                                        </button>
+                                        <button class="field-action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="1" />
+                                                <circle cx="19" cy="12" r="1" />
+                                                <circle cx="5" cy="12" r="1" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="text" class="field-input" placeholder="Enter your full name">
+                                <div class="field-help">Please enter your legal full name</div>
+                            </div>
+                            
+                            <div class="form-field" data-field-id="field2">
+                                <div class="field-header">
+                                    <span class="field-label">Email Address <span class="field-required">*</span></span>
+                                    <div class="field-actions">
+                                        <button class="field-action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 5v14M5 12h14" />
+                                            </svg>
+                                        </button>
+                                        <button class="field-action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="1" />
+                                                <circle cx="19" cy="12" r="1" />
+                                                <circle cx="5" cy="12" r="1" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <input type="email" class="field-input" placeholder="Enter your email address">
+                                <div class="field-help">We'll never share your email with anyone else</div>
+                            </div>
+                            
+                            <div class="form-field" data-field-id="field3">
+                                <div class="field-header">
+                                    <span class="field-label">Industry</span>
+                                    <div class="field-actions">
+                                        <button class="field-action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 5v14M5 12h14" />
+                                            </svg>
+                                        </button>
+                                        <button class="field-action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="1" />
+                                                <circle cx="19" cy="12" r="1" />
+                                                <circle cx="5" cy="12" r="1" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <select class="field-input">
+                                    <option value="" selected disabled>Select your industry</option>
+                                    <option value="technology">Technology</option>
+                                    <option value="healthcare">Healthcare</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="education">Education</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-field" data-field-id="field4">
+                                <div class="field-header">
+                                    <span class="field-label">Additional Comments</span>
+                                    <div class="field-actions">
+                                        <button class="field-action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 5v14M5 12h14" />
+                                            </svg>
+                                        </button>
+                                        <button class="field-action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="1" />
+                                                <circle cx="19" cy="12" r="1" />
+                                                <circle cx="5" cy="12" r="1" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <textarea class="field-input" placeholder="Tell us more about your needs"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="drop-area">
+                            <div>Drag and drop components here or click to add</div>
+                        </div>
+                        
+                        <div class="builder-actions">
+                            <button class="btn btn-outline" id="cancelBuilderBtn">Cancel</button>
+                            <button class="btn btn-outline" id="saveAsDraftBtn">Save as Draft</button>
+                            <button class="btn btn-primary" id="previewPublishBtn">Preview & Publish</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Properties Panel -->
+                    <div class="properties-panel">
+                        <h3 class="properties-title">Field Properties</h3>
+                        
+                        <div class="property-group">
+                            <label class="property-label">Label</label>
+                            <input type="text" class="property-input" value="Full Name">
+                        </div>
+                        
+                        <div class="property-group">
+                            <label class="property-label">Placeholder</label>
+                            <input type="text" class="property-input" value="Enter your full name">
+                        </div>
+                        
+                        <div class="property-group">
+                            <label class="property-label">Help Text</label>
+                            <input type="text" class="property-input" value="Please enter your legal full name">
+                        </div>
+                        
+                        <div class="property-group">
+                            <label class="property-label">
+                                <input type="checkbox" class="property-checkbox" checked>
+                                Required
+                            </label>
+                        </div>
+                        
+                        <div class="property-group">
+                            <label class="property-label">
+                                <input type="checkbox" class="property-checkbox">
+                                Hide Label
+                            </label>
+                        </div>
+                        
+                        <div class="property-group">
+                            <label class="property-label">
+                                <input type="checkbox" class="property-checkbox">
+                                Enable Validation
+                            </label>
+                        </div>
+                        
+                        <div class="property-group">
+                            <label class="property-label">Validation Pattern</label>
+                            <input type="text" class="property-input" placeholder="Regular expression">
+                        </div>
+                        
+                        <div class="property-group">
+                            <label class="property-label">Custom Error Message</label>
+                            <input type="text" class="property-input" placeholder="Please enter a valid value">
+                        </div>
+                        
+                        <h3 class="properties-title" style="margin-top: 30px;">Advanced</h3>
+                        
+                        <div class="property-group">
+                            <label class="property-label">Field ID</label>
+                            <input type="text" class="property-input" value="field1" disabled>
+                        </div>
+                        
+                        <div class="property-group">
+                            <label class="property-label">CSS Classes</label>
+                            <input type="text" class="property-input" placeholder="Additional CSS classes">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Analytics Page -->
+            <div class="page" id="analytics-page">
+                <h1 class="page-title">Form Analytics</h1>
+                
+                <div class="filter-bar">
+                    <select class="filter-select">
+                        <option>All Forms</option>
+                        <option>Customer Information Form</option>
+                        <option>Website Feedback Form</option>
+                        <option>Product Interest Survey</option>
+                    </select>
+                    
+                    <select class="filter-select">
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                        <option>Last 90 Days</option>
+                        <option>This Year</option>
+                    </select>
+                </div>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Submissions</div>
+                        <div class="stat-value">1,245</div>
+                        <div class="stat-trend trend-up">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                <polyline points="16 7 22 7 22 13"></polyline>
+                            </svg>
+                            18% from last period
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Conversion Rate</div>
+                        <div class="stat-value">42.7%</div>
+                        <div class="stat-trend trend-up">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                <polyline points="16 7 22 7 22 13"></polyline>
+                            </svg>
+                            3.8% from last period
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Qualified Leads</div>
+                        <div class="stat-value">684</div>
+                        <div class="stat-trend trend-up">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                <polyline points="16 7 22 7 22 13"></polyline>
+                            </svg>
+                            22% from last period
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Abandonment Rate</div>
+                        <div class="stat-value">24.3%</div>
+                        <div class="stat-trend trend-down">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
+                                <polyline points="16 17 22 17 22 11"></polyline>
+                            </svg>
+                            5.7% from last period
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Submissions Over Time</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <!-- Line Chart placeholder with SVG -->
+                            <svg width="100%" height="300">
+                                <!-- Grid lines -->
+                                <rect x="0" y="250" width="100%" height="1" fill="#e9ecef" />
+                                <rect x="0" y="200" width="100%" height="1" fill="#e9ecef" />
+                                <rect x="0" y="150" width="100%" height="1" fill="#e9ecef" />
+                                <rect x="0" y="100" width="100%" height="1" fill="#e9ecef" />
+                                <rect x="0" y="50" width="100%" height="1" fill="#e9ecef" />
+                                
+                                <!-- Line chart -->
+                                <path d="M50 200 L100 180 L150 190 L200 160 L250 140 L300 120 L350 100 L400 80 L450 90 L500 70 L550 60 L600 40" 
+                                      stroke="#4361ee" 
+                                      stroke-width="3" 
+                                      fill="none" />
+                                
+                                <!-- Area under the line -->
+                                <path d="M50 200 L100 180 L150 190 L200 160 L250 140 L300 120 L350 100 L400 80 L450 90 L500 70 L550 60 L600 40 L600 250 L50 250 Z" 
+                                      fill="rgba(67, 97, 238, 0.1)" />
+                                
+                                <!-- Data points -->
+                                <circle cx="50" cy="200" r="4" fill="#4361ee" />
+                                <circle cx="100" cy="180" r="4" fill="#4361ee" />
+                                <circle cx="150" cy="190" r="4" fill="#4361ee" />
+                                <circle cx="200" cy="160" r="4" fill="#4361ee" />
+                                <circle cx="250" cy="140" r="4" fill="#4361ee" />
+                                <circle cx="300" cy="120" r="4" fill="#4361ee" />
+                                <circle cx="350" cy="100" r="4" fill="#4361ee" />
+                                <circle cx="400" cy="80" r="4" fill="#4361ee" />
+                                <circle cx="450" cy="90" r="4" fill="#4361ee" />
+                                <circle cx="500" cy="70" r="4" fill="#4361ee" />
+                                <circle cx="550" cy="60" r="4" fill="#4361ee" />
+                                <circle cx="600" cy="40" r="4" fill="#4361ee" />
+                                
+                                <!-- X-axis labels -->
+                                <text x="50" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 4</text>
+                                <text x="150" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 6</text>
+                                <text x="250" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 8</text>
+                                <text x="350" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 10</text>
+                                <text x="450" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 12</text>
+                                <text x="550" y="270" text-anchor="middle" font-size="12" fill="#6c757d">Apr 14</text>
+                                
+                                <!-- Y-axis labels -->
+                                <text x="30" y="250" text-anchor="end" font-size="12" fill="#6c757d">0</text>
+                                <text x="30" y="200" text-anchor="end" font-size="12" fill="#6c757d">50</text>
+                                <text x="30" y="150" text-anchor="end" font-size="12" fill="#6c757d">100</text>
+                                <text x="30" y="100" text-anchor="end" font-size="12" fill="#6c757d">150</text>
+                                <text x="30" y="50" text-anchor="end" font-size="12" fill="#6c757d">200</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Recent Leads</div>
+                    </div>
+                    <div class="card-body">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Source Form</th>
+                                    <th>Submission Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Michael Johnson</td>
+                                    <td>michael.j@example.com</td>
+                                    <td>Customer Information Form</td>
+                                    <td>Apr 15, 2025 10:23 AM</td>
+                                    <td><span class="status-badge status-published">New</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Sarah Williams</td>
+                                    <td>s.williams@example.com</td>
+                                    <td>Website Feedback Form</td>
+                                    <td>Apr 15, 2025 09:45 AM</td>
+                                    <td><span class="status-badge status-published">New</span></td>
+                                </tr>
+                                <tr>
+                                    <td>David Miller</td>
+                                    <td>david.m@example.org</td>
+                                    <td>Customer Information Form</td>
+                                    <td>Apr 14, 2025 03:12 PM</td>
+                                    <td><span class="status-badge status-draft">Contacted</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Emma Davis</td>
+                                    <td>emma.davis@example.net</td>
+                                    <td>Website Feedback Form</td>
+                                    <td>Apr 14, 2025 11:32 AM</td>
+                                    <td><span class="status-badge status-draft">Contacted</span></td>
+                                </tr>
+                                <tr>
+                                    <td>James Wilson</td>
+                                    <td>j.wilson@example.com</td>
+                                    <td>Customer Information Form</td>
+                                    <td>Apr 13, 2025 04:56 PM</td>
+                                    <td><span class="status-badge status-published">Qualified</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Page -->
+            <div class="page" id="settings-page">
+                <h1 class="page-title">Settings</h1>
+                
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h2 class="settings-heading">General Settings</h2>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label class="form-label">Company Name</label>
+                                <input type="text" class="form-input" value="Acme Lead Solutions">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Default Time Zone</label>
+                                <select class="form-select">
+                                    <option>(UTC-08:00) Pacific Time</option>
+                                    <option>(UTC-07:00) Mountain Time</option>
+                                    <option>(UTC-06:00) Central Time</option>
+                                    <option>(UTC-05:00) Eastern Time</option>
+                                    <option>(UTC) Coordinated Universal Time</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Default Form Language</label>
+                                <select class="form-select">
+                                    <option>English (US)</option>
+                                    <option>Spanish</option>
+                                    <option>French</option>
+                                    <option>German</option>
+                                    <option>Japanese</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Form Submission Email</label>
+                                <input type="email" class="form-input" value="submissions@acmeleads.com">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h2 class="settings-heading">Form Defaults</h2>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label class="form-label">Default Thank You Message</label>
+                                <textarea class="form-input">Thank you for your submission! We will contact you shortly.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Default Redirect URL</label>
+                                <input type="text" class="form-input" value="https://www.acmeleads.com/thank-you">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" checked>
+                                    Enable CAPTCHA by default
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" checked>
+                                    Send email notifications
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h2 class="settings-heading">Integrations</h2>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label class="form-label">CRM Integration</label>
+                                <select class="form-select">
+                                    <option>Salesforce</option>
+                                    <option>HubSpot</option>
+                                    <option>Zoho CRM</option>
+                                    <option>None</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">API Key</label>
+                                <input type="password" class="form-input" value="••••••••••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Webhook URL</label>
+                                <input type="text" class="form-input" value="https://hooks.acmeleads.com/submissions">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" checked>
+                                    Enable automatic lead syncing
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h2 class="settings-heading">User Management</h2>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label class="form-label">User Roles</label>
+                                <select class="form-select">
+                                    <option>Administrator</option>
+                                    <option>Form Editor</option>
+                                    <option>Analyst</option>
+                                    <option>Lead Manager</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-outline">Manage Users</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-btns">
+                        <button class="btn btn-outline">Cancel</button>
+                        <button class="btn btn-primary">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Preview & Publish Modal -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Preview & Publish Form</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-tabs">
+                    <div class="form-tab active" data-tab="preview">Preview</div>
+                    <div class="form-tab" data-tab="publish">Publish</div>
+                </div>
+                
+                <div class="preview-container">
+                    <!-- Form Preview -->
+                    <form class="preview-form">
+                        <div class="form-group">
+                            <label>Full Name <span style="color: red;">*</span></label>
+                            <input type="text" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email Address <span style="color: red;">*</span></label>
+                            <input type="email" placeholder="Enter your email address" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Industry</label>
+                            <select>
+                                <option value="" selected disabled>Select your industry</option>
+                                <option value="technology">Technology</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="finance">Finance</option>
+                                <option value="education">Education</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Additional Comments</label>
+                            <textarea placeholder="Tell us more about your needs"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Submit</button>
+                    </form>
+                </div>
+                
+                <div class="publish-options" style="display: none;">
+                    <div class="option-heading">Embed Code</div>
+                    <div class="embed-code">
+                        &lt;iframe src="https://forms.acmeleads.com/f/customer-info" width="100%" height="600" frameborder="0"&gt;&lt;/iframe&gt;
+                    </div>
+                    
+                    <div class="option-heading">Custom URL</div>
+                    <div class="custom-url">
+                        <span class="url-prefix">https://forms.acmeleads.com/f/</span>
+                        <input type="text" class="url-input" value="customer-info">
+                    </div>
+                    
+                    <div class="option-heading">Form Settings</div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" checked>
+                            Enable CAPTCHA
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" checked>
+                            Send email notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thank You Page URL</label>
+                        <input type="text" class="form-input" value="https://www.acmeleads.com/thank-you">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="closeModalBtn">Close</button>
+                <button class="btn btn-outline">Save as Draft</button>
+                <button class="btn btn-primary">Publish Form</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // JavaScript for interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation
+            const navItems = document.querySelectorAll('.nav-item');
+            const pages = document.querySelectorAll('.page');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const pageId = this.getAttribute('data-page') + '-page';
+                    
+                    // Update active nav item
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show selected page
+                    pages.forEach(page => {
+                        page.classList.remove('active');
+                        if (page.id === pageId) {
+                            page.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Create New Form
+            const newFormBtn = document.getElementById('newFormBtn');
+            const formBuilderPage = document.getElementById('form-builder-page');
+            
+            if (newFormBtn) {
+                newFormBtn.addEventListener('click', function() {
+                    // Update active nav item (none)
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    
+                    // Show form builder page
+                    pages.forEach(page => page.classList.remove('active'));
+                    formBuilderPage.classList.add('active');
+                    
+                    // Show builder container
+                    const builderContainer = document.querySelector('.builder-container');
+                    if (builderContainer) {
+                        builderContainer.style.display = 'grid';
+                    }
+                });
+            }
+            
+            // Edit Form
+            const editFormBtns = document.querySelectorAll('.edit-form-btn');
+            
+            editFormBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const formId = this.getAttribute('data-id');
+                    console.log('Editing form with ID:', formId);
+                    
+                    // Update active nav item (none)
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    
+                    // Show form builder page
+                    pages.forEach(page => page.classList.remove('active'));
+                    formBuilderPage.classList.add('active');
+                    
+                    // Show builder container
+                    const builderContainer = document.querySelector('.builder-container');
+                    if (builderContainer) {
+                        builderContainer.style.display = 'grid';
+                    }
+                });
+            });
+            
+            // View All Forms
+            const viewAllFormsBtn = document.getElementById('viewAllFormsBtn');
+            
+            if (viewAllFormsBtn) {
+                viewAllFormsBtn.addEventListener('click', function() {
+                    // Find and click the Forms nav item
+                    const formsNavItem = document.querySelector('.nav-item[data-page="forms"]');
+                    if (formsNavItem) {
+                        formsNavItem.click();
+                    }
+                });
+            }
+            
+            // Preview & Publish
+            const previewPublishBtn = document.getElementById('previewPublishBtn');
+            const previewModal = document.getElementById('previewModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const modalClose = document.querySelector('.modal-close');
+            
+            if (previewPublishBtn) {
+                previewPublishBtn.addEventListener('click', function() {
+                    if (previewModal) {
+                        previewModal.style.display = 'flex';
+                    }
+                });
+            }
+            
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', function() {
+                    if (previewModal) {
+                        previewModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            if (modalClose) {
+                modalClose.addEventListener('click', function() {
+                    if (previewModal) {
+                        previewModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Form Tabs in Modal
+            const formTabs = document.querySelectorAll('.form-tab');
+            const previewContainer = document.querySelector('.preview-container');
+            const publishOptions = document.querySelector('.publish-options');
+            
+            formTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabType = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    formTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show selected tab content
+                    if (tabType === 'preview') {
+                        previewContainer.style.display = 'block';
+                        publishOptions.style.display = 'none';
+                    } else if (tabType === 'publish') {
+                        previewContainer.style.display = 'none';
+                        publishOptions.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Cancel Builder
+            const cancelBuilderBtn = document.getElementById('cancelBuilderBtn');
+            
+            if (cancelBuilderBtn) {
+                cancelBuilderBtn.addEventListener('click', function() {
+                    // Go back to dashboard
+                    const dashboardNavItem = document.querySelector('.nav-item[data-page="dashboard"]');
+                    if (dashboardNavItem) {
+                        dashboardNavItem.click();
+                    }
+                });
+            }
+            
+            // Form field selection
+            const formFields = document.querySelectorAll('.form-field');
+            
+            formFields.forEach(field => {
+                field.addEventListener('click', function() {
+                    // Update selected field
+                    formFields.forEach(f => f.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Update properties panel based on selected field
+                    // (In a real app, this would update the properties panel with the field's properties)
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchQuery = this.value.toLowerCase();
+                    console.log('Searching for:', searchQuery);
+                    
+                    // This would filter tables or lists in a real implementation
+                });
+            }
+            
+            // Simulate drag and drop for form builder
+            const componentItems = document.querySelectorAll('.component-item');
+            const dropArea = document.querySelector('.drop-area');
+            
+            componentItems.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', this.getAttribute('data-type'));
+                    console.log('Dragging:', this.getAttribute('data-type'));
+                });
+            });
+            
+            if (dropArea) {
+                dropArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('active');
+                });
+                
+                dropArea.addEventListener('dragleave', function() {
+                    this.classList.remove('active');
+                });
+                
+                dropArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('active');
+                    
+                    const fieldType = e.dataTransfer.getData('text/plain');
+                    console.log('Dropped field type:', fieldType);
+                    
+                    // In a real app, this would create a new field in the form
+                    // For this demo, we'll just log it
+                });
+                
+                // Allow clicking on drop area to simulate adding a field
+                dropArea.addEventListener('click', function() {
+                    console.log('Adding a new field via click');
+                    // In a real app, this would show a field type selector
+                });
+            }
+        });
+    </script>
+</body>
+</html>
