@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Telecommunications - Future-Ready Business Communications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: radial-gradient(ellipse at top, #1a1a2e 0%, #16213e 50%, #0f172a 100%);
+            color: #e2e8f0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .hero-section {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: centre;
+            justify-content: centre;
+            padding: 2rem;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: centre;
+        }
+
+        .hero-content {
+            padding: 2rem 0;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: centre;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #60a5fa 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+
+        .form-container {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+        }
+
+        .form-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .form-subtitle {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .form-step {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(148, 163, 184, 0.2);
+            border-radius: 2px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 1rem;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-input::placeholder {
+            color: #64748b;
+        }
+
+        .radio-group {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .radio-option {
+            position: relative;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .radio-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-option input:checked + .radio-content {
+            color: #ffffff;
+        }
+
+        .radio-option input:checked ~ .radio-indicator {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .radio-option input:checked ~ .radio-indicator::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .radio-content {
+            color: #94a3b8;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding-right: 2rem;
+        }
+
+        .radio-indicator {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(148, 163, 184, 0.5);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .radio-indicator::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 8px;
+            height: 8px;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: #ffffff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            color: #94a3b8;
+        }
+
+        .btn-secondary:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            box-shadow: 0 10px 30px -12px rgba(59, 130, 246, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .step-indicator {
+            text-align: centre;
+            margin-bottom: 2rem;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .form-container {
+                padding: 2rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="hero-section">
+        <div class="floating-elements">
+            <div class="floating-element" style="width: 60px; height: 60px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+            <div class="floating-element" style="width: 40px; height: 40px; top: 20%; right: 20%; animation-delay: 7s;"></div>
+            <div class="floating-element" style="width: 80px; height: 80px; bottom: 30%; left: 15%; animation-delay: 14s;"></div>
+        </div>
+        
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    ✨ Greetings from 2027
+                </div>
+                <h1 class="hero-title">Quantum-Enhanced Business Communications</h1>
+                <p class="hero-subtitle">
+                    Experience the extraordinary sophistication of tomorrow's telecommunication paradigms. Our AI-orchestrated systems leverage quantum-encrypted channels and predictive routing algorithms to revolutionise your business communications infrastructure.
+                </p>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <div style="padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 1rem; border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <div style="font-weight: 700; color: #10b981;">99.97%</div>
+                        <div style="font-size: 0.875rem; color: #64748b;">Quantum Uptime</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(168, 85, 247, 0.1); border-radius: 1rem; border: 1px solid rgba(168, 85, 247, 0.2);">
+                        <div style="font-weight: 700; color: #a855f7;">2.3ms</div>
+                        <div style="font-size: 0.875rem; color: #64748b;">Neural Latency</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 1rem; border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <div style="font-weight: 700; color: #3b82f6;">∞</div>
+                        <div style="font-size: 0.875rem; color: #64748b;">Scalability</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+                </div>
+                
+                <div class="step-indicator">
+                    <span id="stepIndicator">Step 1 of 5</span>
+                </div>
+                
+                <form id="quantumForm">
+                    <!-- Step 1: Personal Details -->
+                    <div class="form-step active" id="step1">
+                        <h2 class="form-title">Personal Identification Matrix</h2>
+                        <p class="form-subtitle">Initialise your quantum communication profile with essential biometric markers.</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="customerName">Full Nomenclature</label>
+                            <input type="text" id="customerName" name="customerName" class="form-input" placeholder="Enter your complete professional designation" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="customerEmail">Neural Network Address</label>
+                            <input type="email" id="customerEmail" name="customerEmail" class="form-input" placeholder="quantum.communicator@domain.com" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Contact Details -->
+                    <div class="form-step" id="step2">
+                        <h2 class="form-title">Quantum Connectivity Coordinates</h2>
+                        <p class="form-subtitle">Establish multi-dimensional communication pathways for optimal system integration.</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="customerPhone">Telephonic Resonance Frequency</label>
+                            <input type="tel" id="customerPhone" name="customerPhone" class="form-input" placeholder="+44 20 1234 5678" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="customerZip">Geographical Quantum Marker</label>
+                            <input type="text" id="customerZip" name="customerZip" class="form-input" placeholder="SW1A 1AA" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Company Size -->
+                    <div class="form-step" id="step3">
+                        <h2 class="form-title">Organisational Magnitude Assessment</h2>
+                        <p class="form-subtitle">Quantify your enterprise's dimensional requirements for optimal system calibration.</p>
+                        
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="companySize" value="startup" required>
+                                <div class="radio-content">Emergent Enterprise (1-10 operatives)</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="companySize" value="small" required>
+                                <div class="radio-content">Established Collective (11-50 operatives)</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="companySize" value="medium" required>
+                                <div class="radio-content">Sophisticated Organisation (51-200 operatives)</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="companySize" value="large" required>
+                                <div class="radio-content">Quantum Corporation (200+ operatives)</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4: Current System -->
+                    <div class="form-step" id="step4">
+                        <h2 class="form-title">Legacy Infrastructure Analysis</h2>
+                        <p class="form-subtitle">Identify your existing communication paradigm for seamless quantum migration protocols.</p>
+                        
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="currentSystem" value="traditional" required>
+                                <div class="radio-content">Antiquated Landline Matrix</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="currentSystem" value="voip" required>
+                                <div class="radio-content">Digital VoIP Infrastructure</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="currentSystem" value="cloud" required>
+                                <div class="radio-content">Cloud-Based Communications</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="currentSystem" value="none" required>
+                                <div class="radio-content">Greenfield Implementation Required</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 5: Primary Use Case -->
+                    <div class="form-step" id="step5">
+                        <h2 class="form-title">Mission-Critical Functionality Requirements</h2>
+                        <p class="form-subtitle">Define your primary operational imperatives for bespoke system optimisation.</p>
+                        
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="primaryUse" value="sales" required>
+                                <div class="radio-content">Revenue Generation & Client Acquisition</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="primaryUse" value="support" required>
+                                <div class="radio-content">Customer Experience Optimisation</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="primaryUse" value="internal" required>
+                                <div class="radio-content">Internal Collaborative Ecosystems</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="primaryUse" value="mixed" required>
+                                <div class="radio-content">Omnipurpose Communication Nexus</div>
+                                <div class="radio-indicator"></div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 6: Success -->
+                    <div class="form-step" id="step6">
+                        <div style="text-align: centre;">
+                            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; margin: 0 auto 2rem; display: flex; align-items: centre; justify-content: centre; font-size: 2rem;">✓</div>
+                            <h2 class="form-title">Quantum Profile Successfully Initialised</h2>
+                            <p class="form-subtitle" style="margin-bottom: 2rem;">Your communication requirements have been processed through our predictive algorithms. A quantum communication specialist will establish contact within the next 24 hours via your preferred dimensional gateway.</p>
+                            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 1rem; padding: 1.5rem; margin-top: 2rem;">
+                                <div style="font-weight: 600; color: #10b981; margin-bottom: 0.5rem;">Next Steps Initiated:</div>
+                                <div style="color: #94a3b8; font-size: 0.875rem;">• Quantum compatibility assessment<br>• Bespoke solution architectural blueprint<br>• Implementation timeline optimisation<br>• ROI projection materialisation</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">◀ Previous</button>
+                        <button type="button" class="btn" id="nextBtn">Continue ▶</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = star.style.height = (Math.random() * 3 + 1) + 'px';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Form navigation
+        let currentStep = 1;
+        const totalSteps = 6;
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('stepIndicator').textContent = 
+                currentStep < totalSteps ? `Step ${currentStep} of ${totalSteps - 1}` : 'Complete';
+        }
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            // Show current step
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            // Update buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.style.display = step > 1 ? 'block' : 'none';
+            
+            if (step === totalSteps) {
+                nextBtn.style.display = 'none';
+            } else if (step === totalSteps - 1) {
+                nextBtn.textContent = 'Initialise Quantum Profile ⚡';
+            } else {
+                nextBtn.textContent = 'Continue ▶';
+                nextBtn.style.display = 'block';
+            }
+            
+            updateProgress();
+        }
+
+        function validateStep(step) {
+            const currentStepElement = document.getElementById(`step${step}`);
+            const requiredInputs = currentStepElement.querySelectorAll('input[required]');
+            
+            for (let input of requiredInputs) {
+                if (input.type === 'radio') {
+                    const radioGroup = currentStepElement.querySelectorAll(`input[name="${input.name}"]`);
+                    const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                    if (!isChecked) return false;
+                } else {
+                    if (!input.value.trim()) return false;
+                }
+            }
+            return true;
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (currentStep < totalSteps - 1) {
+                if (validateStep(currentStep)) {
+                    currentStep++;
+                    showStep(currentStep);
+                } else {
+                    // Add subtle shake animation for invalid input
+                    this.style.animation = 'shake 0.5s ease-in-out';
+                    setTimeout(() => this.style.animation = '', 500);
+                }
+            } else if (currentStep === totalSteps - 1) {
+                // Submit form
+                if (validateStep(currentStep)) {
+                    currentStep++;
+                    showStep(currentStep);
+                    
+                    // Simulate form submission
+                    console.log('Form submitted successfully!');
+                    const formData = new FormData(document.getElementById('quantumForm'));
+                    for (let [key, value] of formData.entries()) {
+                        console.log(key, value);
+                    }
+                }
+            }
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', function() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+
+        // Add shake animation for validation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add input animations
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.3s ease';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // Radio option animations
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove previous selections visual feedback
+                const siblings = this.parentElement.querySelectorAll('.radio-option');
+                siblings.forEach(sibling => {
+                    sibling.style.borderColor = 'rgba(148, 163, 184, 0.2)';
+                    sibling.style.background = 'rgba(15, 23, 42, 0.6)';
+                });
+                
+                // Highlight selected option
+                this.style.borderColor = 'rgba(59, 130, 246, 0.8)';
+                this.style.background = 'rgba(59, 130, 246, 0.1)';
+            });
+        });
+
+        // Initialise
+        createStars();
+        showStep(1);
+    </script>
+</body>
+</html>
