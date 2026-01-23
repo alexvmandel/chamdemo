@@ -121,12 +121,19 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            gap: 20px;
         }
 
         .controls-header h2 {
             font-size: 18px;
             font-weight: 700;
             color: #0F0F4B;
+            flex-shrink: 0;
+        }
+
+        .controls-header .search-box {
+            flex: 1;
+            min-width: 300px;
         }
 
         .add-note-btn {
@@ -147,14 +154,6 @@
             background-color: #E8CA20;
             box-shadow: 0 4px 12px rgba(250, 220, 40, 0.4);
             transform: translateY(-1px);
-        }
-
-        /* Search and filters */
-        .search-filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
         }
 
         .search-box {
@@ -180,7 +179,8 @@
         .filter-group {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            width: 100%;
         }
 
         .filter-select {
@@ -192,9 +192,10 @@
             font-weight: 500;
             background: white;
             cursor: pointer;
-            min-width: 150px;
             color: #64788C;
             transition: border-color 0.2s;
+            flex: 1;
+            min-width: 0;
         }
 
         .filter-select:focus {
@@ -203,21 +204,23 @@
         }
 
         .clear-filters {
-            background: white;
-            border: 2px solid #DCDCDC;
+            background: transparent;
+            border: 2px solid #64788C;
             padding: 12px 18px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
             font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
+            font-weight: 600;
             color: #64788C;
             transition: all 0.2s;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .clear-filters:hover {
-            background-color: #DCDCDC;
-            border-color: #64788C;
+            background-color: #64788C;
+            color: white;
         }
 
         /* Notes list */
@@ -605,16 +608,12 @@
         <div class="controls-section">
             <div class="controls-header">
                 <h2>Search Activity Notes</h2>
-                <button class="add-note-btn" onclick="openModal()">➕ Add Note</button>
-            </div>
-
-            <!-- Search and Filters -->
-            <div class="search-filters">
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="🔍 Search notes..." oninput="filterNotes()">
                 </div>
             </div>
 
+            <!-- Filters -->
             <div class="filter-group">
                 <select class="filter-select" id="levelFilter" onchange="filterNotes()">
                     <option value="">All Levels</option>
@@ -654,7 +653,10 @@
         <div class="notes-section">
             <div class="section-header">
                 <h3>Recent Activity</h3>
-                <span class="result-count" id="resultCount">Showing 6 of 6 notes</span>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span class="result-count" id="resultCount">Showing 6 of 6 notes</span>
+                    <button class="add-note-btn" onclick="openModal()">➕ Add Note</button>
+                </div>
             </div>
 
             <div id="notesList">
